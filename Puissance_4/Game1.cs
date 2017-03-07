@@ -18,15 +18,16 @@ namespace Puissance_4
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        const int VX = 6;
+        const int VX = 7;
         const int VY = 7;
         byte[,] damier = new byte[VX, VY]{
+            {1, 3, 3, 3, 3, 3, 3},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0}
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 2, 1, 2, 0}
         };
         ObjetPuissance4 cadre;
         ObjetPuissance4 pionjaune;
@@ -64,7 +65,7 @@ namespace Puissance_4
             // TODO: use this.Content to load your game content here
 
             graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 660;
+            graphics.PreferredBackBufferHeight = 738;
             graphics.ApplyChanges();
             // on charge un objet mur 
             cadre = new ObjetPuissance4(Content.Load<Texture2D>("images\\cadre"), new Vector2(0f, 0f), new Vector2(100f, 100f));
@@ -105,29 +106,51 @@ namespace Puissance_4
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.DarkGray);
 
             spriteBatch.Begin();
 
             // TODO: Add your drawing code here
-            int offsetX = 40;
-            int offsetY = 140;
+            int offsetX = 120;
+            int offsetY = 150;
+            Vector2 pos;
+            int xpos, ypos;
             for (int x = 0; x < VX; x++)
             {
                 for (int y = 0; y < VY; y++)
                 {
-                    if (damier[x, y] == 0)
+
+                    if (damier[x, y] == 1)
                     {
-                        int xpos, ypos;
                         xpos = offsetX + x * 100;
                         ypos = offsetY + y * 100;
-                        Vector2 pos = new Vector2(ypos, xpos);
+                        pos = new Vector2(ypos, xpos);
+                        spriteBatch.Draw(pionjaune.Texture, pos, Color.White);
+                    }
+                    else if (damier[x, y] == 2)
+                    {
+                        xpos = offsetX + x * 100;
+                        ypos = offsetY + y * 100;
+                        pos = new Vector2(ypos, xpos);
+                        spriteBatch.Draw(pionrouge.Texture, pos, Color.White);
+                    }
+                    if (damier[x, y] <= 3)
+                    {
+                        Console.WriteLine("passe " + x + " " +y);
+                        xpos = offsetX + x * 100;
+                        ypos = offsetY + y * 100;
+                        pos = new Vector2(ypos, xpos);
                         spriteBatch.Draw(cadre.Texture, pos, Color.White);
                     }
                 }
             }
             spriteBatch.End();
             base.Draw(gameTime);
+
+        }
+
+        private void place(ref ObjetPuissance4 pion)
+        {
 
         }
     }
