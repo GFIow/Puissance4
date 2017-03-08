@@ -114,6 +114,11 @@ namespace Puissance_4
             {
                 droite(damier);
             }
+            if (inputHelper.IsNewPress(Keys.Enter))
+            {
+                position = checkPosition(damier);
+                placer();
+            }
                 base.Update(gameTime);
                 
 
@@ -220,13 +225,13 @@ namespace Puissance_4
             return 0;
         }
 
-        private int placer(ref ObjetPuissance4 pion)
+        private void placer()
         {
             int new_posX=0;
-            int y = (int) pion.Position.Y;
-            for (int x = 1; x < VX; x++)
+            int y = checkPosition(damier);
+            for (int x = 0; x < VX; x++)
             {
-                if (damier[(x+1),y] != null)
+                if (x+1 < VX)
                 {
                     if (damier[(x + 1), y] == 0)
                     {
@@ -236,17 +241,18 @@ namespace Puissance_4
                     {
                         //pion.Position = new Vector2(new_posX,pion.Position.Y);
                         damier[new_posX, y] = (byte) player;
-                        return new_posX;
+                        damier[0, y] = 3;
+                        break;
                     }
                 }
                 else
                 {
                     //pion.Position = new Vector2(new_posX, pion.Position.Y);
                     damier[new_posX, y] = (byte) player;
-                    return new_posX;
+                    damier[0, y] = 3;
+                    break;
                 }
             }
-            return -1;
         }
 
         private bool win()
