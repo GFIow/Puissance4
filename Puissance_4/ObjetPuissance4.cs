@@ -27,7 +27,7 @@ namespace Puissance_4
             set { _position = value; }
         }
 
-        public Vector2 Site
+        public Vector2 Size
         {
             get { return _size; }
             set { _size = value; }

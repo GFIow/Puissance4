@@ -18,10 +18,12 @@ namespace Puissance_4
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        byte currentPion = 1;
         const int VX = 7;
         const int VY = 7;
+        const int VITESSE = 1.1;
         byte[,] damier = new byte[VX, VY]{
-            {1, 3, 3, 3, 3, 3, 3},
+            {3, 3, 3, 1, 3, 3, 3},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
@@ -32,6 +34,9 @@ namespace Puissance_4
         ObjetPuissance4 cadre;
         ObjetPuissance4 pionjaune;
         ObjetPuissance4 pionrouge;
+
+        bool animation = false;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -65,7 +70,7 @@ namespace Puissance_4
             // TODO: use this.Content to load your game content here
 
             graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 738;
+            graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
             // on charge un objet mur 
             cadre = new ObjetPuissance4(Content.Load<Texture2D>("images\\cadre"), new Vector2(0f, 0f), new Vector2(100f, 100f));
@@ -134,7 +139,7 @@ namespace Puissance_4
                         pos = new Vector2(ypos, xpos);
                         spriteBatch.Draw(pionrouge.Texture, pos, Color.White);
                     }
-                    if (damier[x, y] <= 3)
+                    if (damier[x, y] < 3 && x!=0)
                     {
                         Console.WriteLine("passe " + x + " " +y);
                         xpos = offsetX + x * 100;
@@ -149,9 +154,51 @@ namespace Puissance_4
 
         }
 
-        private void place(ref ObjetPuissance4 pion)
+        private int placer(ref ObjetPuissance4 pion)
         {
+            int new_posX=0;
+            int y = (int) pion.Position.Y;
+            for (int x = 1; x < VX; x++)
+            {
+                if (damier[(x+1),y] != null)
+                {
+                    if (damier[(x + 1), y] == 0)
+                    {
+                        new_posX++;
+                    }
+                    else
+                    {
+                        //pion.Position = new Vector2(new_posX,pion.Position.Y);
+                        damier[new_posX, y] = currentPion;
+                        return new_posX;
+                    }
+                }
+                else
+                {
+                    //pion.Position = new Vector2(new_posX, pion.Position.Y);
+                    damier[new_posX, y] = currentPion;
+                    return new_posX;
+                }
+            }
+            return -1;
+        }
 
+        private bool win()
+        {
+            return false;
+        }
+
+        private void animate(ref ObjetPuissance4 pion)
+        {
+            int distanceParcourue = 0;
+            int distance = (int) pion.Size.X * (int) pion.Position.X;
+            if (animation && (int) pion.Position.X  != 0)
+            {
+                while(distanceParcourue < distance){
+                    distanceParcourue++;
+                    pion.Position = new Vector2(pion.Position.X+distanceParcourue*VITESSE, pion.Position.Y);
+                }
+            }
         }
     }
 }
