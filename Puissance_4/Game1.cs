@@ -105,21 +105,28 @@ namespace Puissance_4
 
             inputHelper.Update();
 
-            KeyboardState newState = Keyboard.GetState();
-            if (inputHelper.IsNewPress(Keys.Left))
-            {
-                gauche(damier);
-            }
-            if (inputHelper.IsNewPress(Keys.Right))
-            {
-                droite(damier);
-            }
-            if (inputHelper.IsNewPress(Keys.Enter))
-            {
-                position = checkPosition(damier);
-                placer();
-            }
+            
+                if (inputHelper.IsNewPress(Keys.Left))
+                {
+                    gauche(damier);
+                }
+                if (inputHelper.IsNewPress(Keys.Right))
+                {
+                    droite(damier);
+                }
+                if (inputHelper.IsNewPress(Keys.Enter))
+                {
+                    if (placer())
+                    {
+                        if (player == 1)
+                            player = 2;
+                        else player = 1;
+                        damier[0, 3] = (byte)player;
+                    }
+                }
                 base.Update(gameTime);
+            
+                
                 
 
             
@@ -225,34 +232,42 @@ namespace Puissance_4
             return 0;
         }
 
-        private void placer()
+        private Boolean placer()
         {
             int new_posX=0;
             int y = checkPosition(damier);
             for (int x = 0; x < VX; x++)
             {
-                if (x+1 < VX)
+                if (damier[1,y] != 0)
                 {
-                    if (damier[(x + 1), y] == 0)
-                    {
-                        new_posX++;
-                    }
-                    else
-                    {
-                        //pion.Position = new Vector2(new_posX,pion.Position.Y);
-                        damier[new_posX, y] = (byte) player;
-                        damier[0, y] = 3;
-                        break;
-                    }
+                    return false;
                 }
                 else
                 {
-                    //pion.Position = new Vector2(new_posX, pion.Position.Y);
-                    damier[new_posX, y] = (byte) player;
-                    damier[0, y] = 3;
-                    break;
+                    if (x + 1 < VX)
+                    {
+                        if (damier[(x + 1), y] == 0)
+                        {
+                            new_posX++;
+                        }
+                        else
+                        {
+                            //pion.Position = new Vector2(new_posX,pion.Position.Y);
+                            damier[new_posX, y] = (byte)player;
+                            damier[0, y] = 3;
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        //pion.Position = new Vector2(new_posX, pion.Position.Y);
+                        damier[new_posX, y] = (byte)player;
+                        damier[0, y] = 3;
+                        return true;
+                    }
                 }
             }
+            return false;
         }
 
         private bool win()
