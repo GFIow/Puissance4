@@ -20,8 +20,12 @@ namespace Puissance_4
         SpriteBatch spriteBatch;
         const int VX = 7;
         const int VY = 7;
+        int position;
+        int player = 1;
+        InputHelper inputHelper;
+        Boolean fini = false;
         byte[,] damier = new byte[VX, VY]{
-            {1, 3, 3, 3, 3, 3, 3},
+            {3, 3, 3, 1, 3, 3, 3},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0},
@@ -48,8 +52,8 @@ namespace Puissance_4
         /// </summary>
         protected override void Initialize()
         {
+            inputHelper = new InputHelper();
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -64,8 +68,8 @@ namespace Puissance_4
 
             // TODO: use this.Content to load your game content here
 
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 738;
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
             // on charge un objet mur 
             cadre = new ObjetPuissance4(Content.Load<Texture2D>("images\\cadre"), new Vector2(0f, 0f), new Vector2(100f, 100f));
@@ -95,9 +99,56 @@ namespace Puissance_4
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            inputHelper.Update();
+
+            KeyboardState newState = Keyboard.GetState();
+            if (inputHelper.IsNewPress(Keys.Left))
+            {
+                gauche(damier);
+            }
+            if (inputHelper.IsNewPress(Keys.Right))
+            {
+                droite(damier);
+            }
+                base.Update(gameTime);
+                
+
+            
             // TODO: Add your update logic here
 
-            base.Update(gameTime);
+            
+        }
+
+        private void gauche(byte[,] dam)
+        {
+                position = checkPosition(damier);
+                if ((position - 1) >= 0)
+                {
+                    dam[0, position - 1] = (byte)player;
+                    dam[0, position] = 3;
+                }
+                else
+                {
+                    dam[0, VY - 1] = (byte)player;
+                    dam[0, position] = 3;
+                }
+            
+        }
+
+        private void droite(byte[,] dam)
+        {
+            position = checkPosition(damier);
+            if ((position + 1) <= (VY - 1))
+            {
+                dam[0, position + 1] = (byte)player;
+                dam[0, position] = 3;
+            }
+            else
+            {
+                dam[0, 0] = (byte)player;
+                dam[0, position] = 3;
+            }
+
         }
 
         /// <summary>
@@ -106,7 +157,8 @@ namespace Puissance_4
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkGray);
+            
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
 
@@ -134,7 +186,7 @@ namespace Puissance_4
                         pos = new Vector2(ypos, xpos);
                         spriteBatch.Draw(pionrouge.Texture, pos, Color.White);
                     }
-                    if (damier[x, y] <= 3)
+                    if (damier[x, y] < 3 && x!=0)
                     {
                         Console.WriteLine("passe " + x + " " +y);
                         xpos = offsetX + x * 100;
@@ -144,9 +196,24 @@ namespace Puissance_4
                     }
                 }
             }
+
+            
+
             spriteBatch.End();
             base.Draw(gameTime);
 
+        }
+
+        public int checkPosition(byte[,] damier)
+        {
+            for (int i = 0; i < VX; i++)
+            {
+                if (damier[0, i] == player)
+                {
+                    return i;
+                }
+            }
+            return 0;
         }
 
         private void place(ref ObjetPuissance4 pion)
