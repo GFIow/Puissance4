@@ -18,10 +18,9 @@ namespace Puissance_4
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        byte currentPion = 1;
         const int VX = 7;
         const int VY = 7;
-        const int VITESSE = 1.1;
+        const float VITESSE = 1;
         int position;
         int player = 1;
         InputHelper inputHelper;
@@ -236,14 +235,14 @@ namespace Puissance_4
                     else
                     {
                         //pion.Position = new Vector2(new_posX,pion.Position.Y);
-                        damier[new_posX, y] = currentPion;
+                        damier[new_posX, y] = (byte) player;
                         return new_posX;
                     }
                 }
                 else
                 {
                     //pion.Position = new Vector2(new_posX, pion.Position.Y);
-                    damier[new_posX, y] = currentPion;
+                    damier[new_posX, y] = (byte) player;
                     return new_posX;
                 }
             }
