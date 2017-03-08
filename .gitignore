@@ -1,0 +1,10 @@
+
+*.exe
+
+*.pdb
+
+*.cache
+
+Puissance_4/obj/x86/Debug/cachefile-\{0AFBF159-DA51-43FF-9032-A2ED48BAA6F7}-targetpath\.txt
+
+Puissance_4/obj/x86/Debug/ContentPipeline-\{0AFBF159-DA51-43FF-9032-A2ED48BAA6F7}\.xml

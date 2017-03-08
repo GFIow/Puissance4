@@ -22,6 +22,10 @@ namespace Puissance_4
         const int VX = 7;
         const int VY = 7;
         const int VITESSE = 1.1;
+        int position;
+        int player = 1;
+        InputHelper inputHelper;
+        Boolean fini = false;
         byte[,] damier = new byte[VX, VY]{
             {3, 3, 3, 1, 3, 3, 3},
             {0, 0, 0, 0, 0, 0, 0},
@@ -53,8 +57,8 @@ namespace Puissance_4
         /// </summary>
         protected override void Initialize()
         {
+            inputHelper = new InputHelper();
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -100,9 +104,56 @@ namespace Puissance_4
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            inputHelper.Update();
+
+            KeyboardState newState = Keyboard.GetState();
+            if (inputHelper.IsNewPress(Keys.Left))
+            {
+                gauche(damier);
+            }
+            if (inputHelper.IsNewPress(Keys.Right))
+            {
+                droite(damier);
+            }
+                base.Update(gameTime);
+                
+
+            
             // TODO: Add your update logic here
 
-            base.Update(gameTime);
+            
+        }
+
+        private void gauche(byte[,] dam)
+        {
+                position = checkPosition(damier);
+                if ((position - 1) >= 0)
+                {
+                    dam[0, position - 1] = (byte)player;
+                    dam[0, position] = 3;
+                }
+                else
+                {
+                    dam[0, VY - 1] = (byte)player;
+                    dam[0, position] = 3;
+                }
+            
+        }
+
+        private void droite(byte[,] dam)
+        {
+            position = checkPosition(damier);
+            if ((position + 1) <= (VY - 1))
+            {
+                dam[0, position + 1] = (byte)player;
+                dam[0, position] = 3;
+            }
+            else
+            {
+                dam[0, 0] = (byte)player;
+                dam[0, position] = 3;
+            }
+
         }
 
         /// <summary>
@@ -111,7 +162,8 @@ namespace Puissance_4
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkGray);
+            
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
 
@@ -149,9 +201,24 @@ namespace Puissance_4
                     }
                 }
             }
+
+            
+
             spriteBatch.End();
             base.Draw(gameTime);
 
+        }
+
+        public int checkPosition(byte[,] damier)
+        {
+            for (int i = 0; i < VX; i++)
+            {
+                if (damier[0, i] == player)
+                {
+                    return i;
+                }
+            }
+            return 0;
         }
 
         private int placer(ref ObjetPuissance4 pion)
