@@ -1,4 +1,0 @@
-Content\images\Bitmap1.xnb
-Content\images\cadre.xnb
-Content\images\jaune.xnb
-Content\images\rouge.xnb
